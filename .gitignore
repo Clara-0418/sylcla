@@ -1,0 +1,4 @@
+data/
+ai-key.txt
+node_modules/
+.DS_Store
