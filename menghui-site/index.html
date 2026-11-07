@@ -2970,14 +2970,16 @@ canvas { display: block; }
 .photo-field { display: flex; align-items: flex-start; gap: 1.2rem; flex-wrap: wrap; }
 .photo-preview {
   width: 110px;
-  aspect-ratio: 3 / 4;
+  min-height: 80px;
+  max-height: 220px;
+  aspect-ratio: auto;
   border: 1px solid var(--line-soft);
   background: #0a0607;
   display: grid;
   place-items: center;
   overflow: hidden;
 }
-.photo-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-preview img { width: 100%; height: auto; max-height: 220px; object-fit: contain; display: block; }
 .photo-preview__empty { font-size: .62rem; letter-spacing: .1em; color: var(--faint); }
 .photo-controls { display: flex; flex-direction: column; align-items: flex-start; gap: .6rem; }
 .photo-controls label.btn { cursor: pointer; position: relative; }
@@ -3283,8 +3285,11 @@ canvas { display: block; }
 .moment__image, .space__image, .record__image, .reader__image {
   display: block;
   width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+  object-position: center;
+  max-height: 70vh;
   border: 1px solid var(--line-soft);
   background: #0a0607;
 }
@@ -3294,7 +3299,7 @@ canvas { display: block; }
 .dossier.dossier--file { grid-template-columns: 200px minmax(0, 1fr); }
 .dossier__photo { height: auto; aspect-ratio: 3 / 4; }
 .dossier__crest { width: 40px; height: 40px; }
-.photo-preview { width: 140px; aspect-ratio: 3 / 4; }
+.photo-preview { width: 140px; }
 
 .dossier__intro { margin: 1rem 0 0; padding-left: .8rem; border-left: 1px solid rgba(224, 22, 43, .45); font-size: .8rem; line-height: 1.8; color: var(--bone); }
 .dossier__section { margin-top: 1rem; }
@@ -4211,6 +4216,25 @@ body { padding-bottom: env(safe-area-inset-bottom); }
 .footer__data button, .footer__import { padding: .28rem .55rem; border: 1px solid var(--line-soft); background: transparent; color: var(--faint); font-size: .56rem; letter-spacing: .08em; cursor: pointer; }
 .footer__data button:hover, .footer__import:hover { color: var(--bone); border-color: var(--red); }
 body:not(.is-admin) .footer__data { display: none; }
+.compose__options { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: .2rem 0 1rem; padding: .7rem 0; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+.compose__check { display: inline-flex; align-items: center; gap: .5rem; font-size: .66rem; letter-spacing: .1em; color: var(--dim); cursor: pointer; }
+.compose__check input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--red); }
+.compose__check select { border: 1px solid var(--line-soft); background: var(--ink); color: var(--bone); padding: .35rem .5rem; font-size: .66rem; }
+.daily-group { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 2.2rem 0 .9rem; padding-bottom: .6rem; border-bottom: 1px solid var(--line-soft); }
+.daily-group:first-child { margin-top: 0; }
+.daily-group h3 { margin: 0; font-family: var(--serif-cn); font-size: 1.1rem; font-weight: 400; letter-spacing: .08em; color: var(--bone); }
+.daily-group span { font-family: var(--serif-en); font-size: .56rem; letter-spacing: .26em; color: var(--faint); }
+.chat-panel__head-actions { display: flex; align-items: center; gap: .7rem; }
+.chat-panel__edit { border: 1px solid var(--line-soft); background: transparent; color: var(--dim); padding: .4rem .7rem; font-size: .62rem; letter-spacing: .1em; cursor: pointer; }
+.chat-panel__edit:hover { color: var(--bone); border-color: var(--red); }
+body:not(.is-admin) #chatEditBtn { display: none; }
+.hero__timer { margin: 1.7rem auto 1.9rem; display: flex; flex-direction: column; align-items: center; gap: .7rem; }
+.hero__timer-label { font-family: var(--serif-en); font-size: .58rem; letter-spacing: .34em; color: var(--faint); }
+.hero__timer-units { display: flex; align-items: flex-start; gap: clamp(1rem, 4vw, 2.8rem); }
+.hero__timer-unit { display: flex; flex-direction: column; align-items: center; min-width: 3.6rem; }
+.hero__timer-unit strong { font-family: var(--serif-en); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 400; line-height: 1; color: var(--bone); text-shadow: 0 0 24px rgba(224, 22, 43, .35); font-variant-numeric: tabular-nums; }
+.hero__timer-unit small { margin-top: .35rem; font-size: .55rem; letter-spacing: .18em; color: var(--faint); }
+@media (max-width: 460px) { .hero__timer-units { gap: 1.1rem; } .hero__timer-unit { min-width: 2.9rem; } .hero__timer-unit strong { font-size: 1.55rem; } }
 </style>
 </head>
 <body class="is-locked">
@@ -4433,6 +4457,16 @@ body:not(.is-admin) .footer__data { display: none; }
         <p class="hero__en">My heart found you<br>before my mind understood.</p>
         <p class="hero__tag">当我感到脆弱的时候，就默念你的名字</p>
 
+        <div id="heroTimer" class="hero__timer" aria-label="从 2024 年 7 月 15 日开始计时">
+          <span class="hero__timer-label">SINCE 2024.07.15</span>
+          <span class="hero__timer-units">
+            <span class="hero__timer-unit"><strong id="timerDays">000</strong><small>天</small></span>
+            <span class="hero__timer-unit"><strong id="timerHours">00</strong><small>时</small></span>
+            <span class="hero__timer-unit"><strong id="timerMinutes">00</strong><small>分</small></span>
+            <span class="hero__timer-unit"><strong id="timerSeconds">00</strong><small>秒</small></span>
+          </span>
+        </div>
+
         <div class="hero__cta">
           <a href="#/dossiers" class="btn btn--fill">翻开档案</a>
           <a id="heroDailyCta" href="#/daily" class="btn btn--line">查看点滴</a>
@@ -4614,9 +4648,22 @@ body:not(.is-admin) .footer__data { display: none; }
     <h3 id="composerTitle" class="reader__title">新建</h3>
     <form id="composerForm" class="composer-form" novalidate>
       <div id="composerFields"></div>
+      <div class="compose__options">
+        <label class="compose__check">
+          <input id="composerPublic" type="checkbox" checked>
+          <span>公开展示</span>
+        </label>
+        <label id="composerOwnerWrap" class="compose__check" hidden>
+          <span>点滴归属</span>
+          <select id="composerOwner">
+            <option value="him">他的点滴</option>
+            <option value="me">我的点滴</option>
+          </select>
+        </label>
+      </div>
       <p id="composerError" class="compose__error" role="alert" hidden></p>
       <div class="compose__foot">
-        <p class="compose__note">只保存在这台设备的浏览器里 · 不会上传</p>
+        <p class="compose__note">保存到 Sylcla 数据库 · 多设备同步</p>
         <button type="submit" class="btn btn--fill" id="composerSave">保存</button>
       </div>
     </form>
@@ -4744,9 +4791,12 @@ body:not(.is-admin) .footer__data { display: none; }
         <p class="chat-panel__kicker">CHAT RECORD</p>
         <h3 id="chatTitle">秦彻</h3>
       </div>
-      <button class="reader__close" type="button" aria-label="关闭" data-close-chat>
-        <span></span><span></span>
-      </button>
+      <div class="chat-panel__head-actions">
+        <button id="chatEditBtn" class="chat-panel__edit" type="button">编辑</button>
+        <button class="reader__close" type="button" aria-label="关闭" data-close-chat>
+          <span></span><span></span>
+        </button>
+      </div>
     </header>
     <div id="chatBody" class="chat-panel__body"></div>
     <div id="chatLock" class="chat-lock" hidden>
@@ -4894,7 +4944,7 @@ window.SYLCLA = (function () {
         { key: 'photo', label: '照片', en: 'PORTRAIT', type: 'image', wide: true },
         { key: 'intro', label: '一句自我介绍', en: 'INTRO', type: 'textarea', wide: true, max: 120, rows: 2, placeholder: '用一句话介绍这一页。' },
         { key: 'appearance', label: '外貌', en: 'APPEARANCE', type: 'textarea', wide: true, max: 500, rows: 3, placeholder: '眼睛、头发、声音、身上的味道……' },
-        { key: 'habits', label: '习惯', en: 'HABITS', type: 'textarea', wide: true, max: 500, rows: 3, placeholder: '他习惯性做的事。' },
+        { key: 'habits', label: '性格', en: 'PERSONALITY', type: 'textarea', wide: true, max: 500, rows: 3, placeholder: '他的性格、脾气、习惯性的反应。' },
         { key: 'likes', label: '喜欢', en: 'LIKES', type: 'textarea', wide: true, max: 400, rows: 2, placeholder: '喜欢的东西、时刻、称呼……' },
         { key: 'dislikes', label: '讨厌', en: 'DISLIKES', type: 'textarea', wide: true, max: 400, rows: 2, placeholder: '不喜欢的东西、被怎样对待……' },
         { key: 'experience', label: '个人经历', en: 'TIMELINE', type: 'nodes', wide: true },
@@ -5069,6 +5119,7 @@ window.SYLCLA = (function () {
     paddle: null,
     paddlePromise: null,
     chat: null,
+    editingChat: null,
     importToken: 0,
     importUrls: [],
     serverStamp: 0,
@@ -5173,6 +5224,10 @@ window.SYLCLA = (function () {
       const db = parseDate(b.date).getTime();
       return db - da || String(b.id).localeCompare(String(a.id));
     });
+  }
+
+  function visibleList(list) {
+    return (list || []).filter((rec) => state.admin || rec.isPublic !== false);
   }
 
   function partnerName() {
@@ -5297,7 +5352,10 @@ window.SYLCLA = (function () {
         await pushServerData();
         if (state.serverHasData) localStorage.removeItem('sylcla.pendingServerSeed');
       }
-      const res = await fetch('/api/data', { cache: 'no-store' });
+      const res = await fetch('/api/data', {
+        cache: 'no-store',
+        headers: state.admin ? { 'x-sylcla-password': ADMIN_PASSWORD } : {}
+      });
       if (!res.ok) return;
       const payload = await res.json();
       state.serverChecked = true;
@@ -5382,6 +5440,7 @@ window.SYLCLA = (function () {
     if (dailyCta) dailyCta.textContent = on ? '记录点滴' : '查看点滴';
     applyChatLock();
     if (on && state.serverChecked && !state.serverHasData) queueServerSave();
+    fetchServerData(false);
   }
 
   function openGate(purpose) {
@@ -5987,7 +6046,7 @@ window.SYLCLA = (function () {
 
       [
         ['外貌', item.appearance],
-        ['习惯', item.habits],
+        ['性格', item.habits],
         ['喜欢', item.likes],
         ['讨厌', item.dislikes]
       ].forEach(([label, val]) => {
@@ -6052,7 +6111,7 @@ window.SYLCLA = (function () {
     const box = $('#list-lore');
     if (!box) return;
     box.innerHTML = '';
-    const list = state.data.lore;
+    const list = visibleList(state.data.lore);
     if (!list.length) {
       box.appendChild(emptyNode('lore'));
       return;
@@ -6121,41 +6180,55 @@ window.SYLCLA = (function () {
 
   /* ══════════════════ 渲染：日常 ══════════════════ */
 
+  function buildMoment(rec, i) {
+    const d = parseDate(rec.date);
+    const row = el('article', 'moment');
+    row.style.transitionDelay = `${Math.min(i, 6) * 50}ms`;
+
+    const rail = el('div', 'moment__rail');
+    rail.appendChild(el('span', 'moment__day', pad(d.getDate())));
+    rail.appendChild(el('span', 'moment__ym', `${MONTH_EN[d.getMonth()]} ${d.getFullYear()}`));
+    rail.appendChild(el('span', 'moment__weekday', WEEKDAY_CN[d.getDay()]));
+
+    const body = el('div', 'moment__body');
+    const meta = el('div', 'moment__meta');
+    const mood = moodChip(rec.mood);
+    if (mood) meta.appendChild(mood);
+    if (rec.isPublic === false) meta.appendChild(el('span', 'chip-mood', '未公开'));
+    if (meta.children.length) body.appendChild(meta);
+    if (rec.image) {
+      const img = document.createElement('img');
+      img.className = 'moment__image';
+      img.src = rec.image;
+      img.alt = '点滴图片';
+      body.appendChild(img);
+    }
+    body.appendChild(el('p', 'moment__text', rec.text));
+    body.appendChild(cardActions('daily', rec.id));
+
+    row.append(rail, body);
+    return row;
+  }
+
   function renderDaily() {
     const box = $('#list-daily');
     if (!box) return;
     box.innerHTML = '';
-    const list = sortByDate(state.data.daily);
-    if (!list.length) { box.appendChild(emptyNode('daily')); return; }
+    const all = sortByDate(visibleList(state.data.daily));
+    if (!all.length) { box.appendChild(emptyNode('daily')); return; }
 
-    list.forEach((rec, i) => {
-      const d = parseDate(rec.date);
-      const row = el('article', 'moment');
-      row.style.transitionDelay = `${Math.min(i, 6) * 50}ms`;
-
-      const rail = el('div', 'moment__rail');
-      rail.appendChild(el('span', 'moment__day', pad(d.getDate())));
-      rail.appendChild(el('span', 'moment__ym', `${MONTH_EN[d.getMonth()]} ${d.getFullYear()}`));
-      rail.appendChild(el('span', 'moment__weekday', WEEKDAY_CN[d.getDay()]));
-
-      const body = el('div', 'moment__body');
-      const meta = el('div', 'moment__meta');
-      const mood = moodChip(rec.mood);
-      if (mood) meta.appendChild(mood);
-      if (meta.children.length) body.appendChild(meta);
-      if (rec.image) {
-        const img = document.createElement('img');
-        img.className = 'moment__image';
-        img.src = rec.image;
-        img.alt = '点滴图片';
-        body.appendChild(img);
-      }
-      body.appendChild(el('p', 'moment__text', rec.text));
-      body.appendChild(cardActions('daily', rec.id));
-
-      row.append(rail, body);
-      box.appendChild(row);
-      watch(row);
+    [['him', '他的点滴', 'HIS'], ['me', '我的点滴', 'MINE']].forEach(([owner, title, en]) => {
+      const list = all.filter((rec) => (rec.owner === 'me' ? 'me' : 'him') === owner);
+      if (!list.length) return;
+      const head = el('div', 'daily-group');
+      head.appendChild(el('h3', '', title));
+      head.appendChild(el('span', '', en));
+      box.appendChild(head);
+      list.forEach((rec, i) => {
+        const row = buildMoment(rec, i);
+        box.appendChild(row);
+        watch(row);
+      });
     });
   }
 
@@ -6165,7 +6238,7 @@ window.SYLCLA = (function () {
     const box = $('#list-mail');
     if (!box) return;
     box.innerHTML = '';
-    const list = sortByDate(state.data.mail);
+    const list = sortByDate(visibleList(state.data.mail));
     if (!list.length) { box.appendChild(emptyNode('mail')); return; }
 
     list.forEach((rec, i) => {
@@ -6192,11 +6265,36 @@ window.SYLCLA = (function () {
 
   /* ══════════════════ 渲染：空间 ══════════════════ */
 
+  function moveSpace(id, direction) {
+    if (!state.admin) return;
+    const list = visibleList(state.data.space).slice().sort((a, b) => {
+      const oa = Number.isFinite(Number(a.order)) ? Number(a.order) : Number.MAX_SAFE_INTEGER;
+      const ob = Number.isFinite(Number(b.order)) ? Number(b.order) : Number.MAX_SAFE_INTEGER;
+      if (oa !== ob) return oa - ob;
+      return parseDate(b.date) - parseDate(a.date);
+    });
+    list.forEach((rec, i) => { rec.order = i; });
+    const index = list.findIndex((rec) => rec.id === id);
+    const target = index + (direction === 'up' ? -1 : 1);
+    if (index < 0 || target < 0 || target >= list.length) return;
+    const tmp = list[index].order;
+    list[index].order = list[target].order;
+    list[target].order = tmp;
+    persist();
+    renderSpace();
+    toast(direction === 'up' ? '已上移' : '已下移');
+  }
+
   function renderSpace() {
     const box = $('#list-space');
     if (!box) return;
     box.innerHTML = '';
-    const list = sortByDate(state.data.space);
+    const list = visibleList(state.data.space).slice().sort((a, b) => {
+      const oa = Number.isFinite(Number(a.order)) ? Number(a.order) : Number.MAX_SAFE_INTEGER;
+      const ob = Number.isFinite(Number(b.order)) ? Number(b.order) : Number.MAX_SAFE_INTEGER;
+      if (oa !== ob) return oa - ob;
+      return parseDate(b.date) - parseDate(a.date);
+    });
     if (!list.length) { box.appendChild(emptyNode('space')); return; }
 
     list.forEach((rec, i) => {
@@ -6219,6 +6317,19 @@ window.SYLCLA = (function () {
 
       const acts = cardActions('space', rec.id);
       acts.classList.add('space-card__actions');
+      if (state.admin) {
+        const up = el('button', 'card-act', '↑');
+        up.type = 'button';
+        up.dataset.spaceMove = 'up';
+        up.dataset.id = rec.id;
+        up.title = '上移';
+        const down = el('button', 'card-act', '↓');
+        down.type = 'button';
+        down.dataset.spaceMove = 'down';
+        down.dataset.id = rec.id;
+        down.title = '下移';
+        acts.prepend(up, down);
+      }
       card.appendChild(acts);
 
       box.appendChild(card);
@@ -6264,7 +6375,7 @@ window.SYLCLA = (function () {
     const summary = $('#callsSummary');
     if (!box) return;
     box.innerHTML = '';
-    const list = sortByDate(state.data.calls);
+    const list = sortByDate(visibleList(state.data.calls));
 
     if (summary) {
       if (!list.length) {
@@ -6391,6 +6502,12 @@ window.SYLCLA = (function () {
     module.fields.forEach((f) => {
       fields.appendChild(buildField(f, rec ? rec[f.key] : undefined));
     });
+    const pub = $('#composerPublic');
+    if (pub) pub.checked = !rec || rec.isPublic !== false;
+    const ownerWrap = $('#composerOwnerWrap');
+    if (ownerWrap) ownerWrap.hidden = moduleId !== 'daily';
+    const owner = $('#composerOwner');
+    if (owner) owner.value = rec && rec.owner === 'me' ? 'me' : 'him';
     const error = $('#composerError');
     if (error) { error.hidden = true; error.textContent = ''; }
 
@@ -6684,6 +6801,12 @@ window.SYLCLA = (function () {
       record = Object.assign({ id: editingId || uid('e') }, values);
       if (!record.date) record.date = todayISO();
     }
+    const publicBox = $('#composerPublic');
+    record.isPublic = publicBox ? publicBox.checked : true;
+    if (moduleId === 'daily') {
+      const ownerSelect = $('#composerOwner');
+      record.owner = ownerSelect && ownerSelect.value === 'me' ? 'me' : 'him';
+    }
 
     const list = state.data[moduleId];
     if (editingId) {
@@ -6731,7 +6854,7 @@ window.SYLCLA = (function () {
     root.appendChild(el('div', 'reader-dossier__rule'));
     [
       ['外貌', rec.appearance],
-      ['习惯', rec.habits],
+      ['性格', rec.habits],
       ['喜欢', rec.likes],
       ['讨厌', rec.dislikes]
     ].forEach(([label, val]) => {
@@ -6765,6 +6888,7 @@ window.SYLCLA = (function () {
     const module = MOD_BY_ID[moduleId];
     const rec = findEntry(moduleId, id);
     if (!module || !rec || !reader) return;
+    if (!state.admin && rec.isPublic === false) { toast('这条记录未公开'); return; }
     if (moduleId === 'calls' && Array.isArray(rec.chat) && rec.chat.length) {
       openChatView(rec);
       return;
@@ -6795,7 +6919,7 @@ window.SYLCLA = (function () {
       ].filter(([, v]) => v).map(([k, v]) => `${k}：${v}`).join('\n');
       const sections = [
         ['外貌', rec.appearance],
-        ['习惯', rec.habits],
+        ['性格', rec.habits],
         ['喜欢', rec.likes],
         ['讨厌', rec.dislikes]
       ].filter(([, v]) => v).map(([k, v]) => `${k}\n${v}`).join('\n\n');
@@ -7491,14 +7615,18 @@ window.SYLCLA = (function () {
     return groupChatLines(lines, width);
   }
 
-  function openChatImport() {
+  function openChatImport(editId) {
     const modal = $('#chatImport');
     if (!modal) return;
+    const rec = editId ? findEntry('calls', editId) : null;
+    if (editId && !rec) return;
+    state.editingChat = rec ? rec.id : null;
     const previews = $('#chatImportPreviews');
     const editor = $('#chatImportEditor');
     const rows = $('#chatImportRows');
     const progress = $('#chatImportProgress');
     const save = $('#chatImportSave');
+    const title = $('#chatImportTitle');
     const date = $('#chatImportDate');
     const minutes = $('#chatImportMinutes');
     const direction = $('#chatImportDirection');
@@ -7507,12 +7635,19 @@ window.SYLCLA = (function () {
     if (previews) { previews.innerHTML = ''; previews.hidden = true; }
     if (editor) editor.hidden = true;
     if (rows) rows.innerHTML = '';
-    if (progress) progress.textContent = '先填通话时长；聊天截图可选，不导入也可以直接保存通话。';
-    if (save) save.disabled = false;
-    if (date) date.value = todayISO();
-    if (minutes) minutes.value = '';
-    if (direction) direction.value = '来电';
+    if (title) title.textContent = rec ? '编辑聊天记录' : '记录通话';
+    if (save) { save.disabled = false; save.textContent = rec ? '保存修改' : '保存通话'; }
+    if (progress) progress.textContent = rec
+      ? '修改日期、时长、类型或对话内容，然后保存。'
+      : '先填通话时长；聊天截图可选，不导入也可以直接保存通话。';
+    if (date) date.value = rec ? rec.date : todayISO();
+    if (minutes) minutes.value = rec ? (Number(rec.minutes) || 0) : '';
+    if (direction) direction.value = rec && rec.direction === '拨出' ? '拨出' : '来电';
     if (error) error.hidden = true;
+    if (rec) {
+      state.importToken += 1;
+      renderChatEditor(rec.chat || []);
+    }
     modal.hidden = false;
     updateAiStatus();
     lockScroll();
@@ -7527,6 +7662,7 @@ window.SYLCLA = (function () {
     const modal = $('#chatImport');
     if (modal) modal.hidden = true;
     state.importToken += 1;
+    state.editingChat = null;
     revokeImportUrls();
     unlockScroll();
   }
@@ -7868,26 +8004,26 @@ window.SYLCLA = (function () {
     const dateInput = $('#chatImportDate');
     const dirInput = $('#chatImportDirection');
     const direction = dirInput && dirInput.value === '来电' ? '来电' : '拨出';
-    const rec = {
-      id: uid('call'),
-      date: (dateInput && dateInput.value) || todayISO(),
-      direction,
-      minutes,
-      note: messages.length
-        ? `通话 ${minutes} 分钟 · 聊天 ${messages.length} 条`
-        : `通话 ${minutes} 分钟`
-    };
+    const existing = state.editingChat ? findEntry('calls', state.editingChat) : null;
+    const rec = existing || { id: uid('call') };
+    rec.date = (dateInput && dateInput.value) || todayISO();
+    rec.direction = direction;
+    rec.minutes = minutes;
+    rec.note = messages.length
+      ? `通话 ${minutes} 分钟 · 聊天 ${messages.length} 条`
+      : `通话 ${minutes} 分钟`;
     if (messages.length) rec.chat = messages;
-    state.data.calls.unshift(rec);
+    else delete rec.chat;
+    if (!existing) state.data.calls.unshift(rec);
     persist();
     renderAll();
     closeChatImport();
     go('calls', { hash: true, scroll: false });
     if (messages.length) {
       openChatView(rec);
-      toast('通话与聊天已保存');
+      toast(existing ? '聊天记录已更新' : '通话与聊天已保存');
     } else {
-      toast('通话已保存');
+      toast(existing ? '通话记录已更新' : '通话已保存');
     }
   }
 
@@ -8040,6 +8176,9 @@ window.SYLCLA = (function () {
       const add = e.target.closest('[data-add]');
       if (add) { e.preventDefault(); openComposer(add.dataset.add); return; }
 
+      const move = e.target.closest('[data-space-move]');
+      if (move) { moveSpace(move.dataset.id, move.dataset.spaceMove); return; }
+
       const view = e.target.closest('[data-view]');
       if (view) { openViewer(view.dataset.module, view.dataset.view); return; }
 
@@ -8190,6 +8329,15 @@ window.SYLCLA = (function () {
           return;
         }
         openGate('chat');
+      });
+    }
+    const chatEditBtn = $('#chatEditBtn');
+    if (chatEditBtn) {
+      chatEditBtn.addEventListener('click', () => {
+        if (!state.admin || !state.chat) return;
+        const id = state.chat;
+        closeChatView();
+        openChatImport(id);
       });
     }
 
@@ -8406,6 +8554,26 @@ window.SYLCLA = (function () {
 
   /* ══════════════════ 启动 ══════════════════ */
 
+  function initHeroTimer() {
+    const start = new Date(2024, 6, 15, 0, 0, 0).getTime();
+    const daysEl = $('#timerDays');
+    const hoursEl = $('#timerHours');
+    const minutesEl = $('#timerMinutes');
+    const secondsEl = $('#timerSeconds');
+    if (!daysEl) return;
+    const two = (n) => String(n).padStart(2, '0');
+    const tick = () => {
+      const diff = Math.max(0, Date.now() - start);
+      const totalSeconds = Math.floor(diff / 1000);
+      daysEl.textContent = String(Math.floor(totalSeconds / 86400)).padStart(3, '0');
+      hoursEl.textContent = two(Math.floor(totalSeconds % 86400 / 3600));
+      minutesEl.textContent = two(Math.floor(totalSeconds % 3600 / 60));
+      secondsEl.textContent = two(totalSeconds % 60);
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+
   function init() {
     state.data = loadData();
     initRouter();
@@ -8418,6 +8586,7 @@ window.SYLCLA = (function () {
     initEmbers();
     initSiteEmbers();
     initCursorGlow();
+    initHeroTimer();
     bootSplash();
     revealAll();
     startServerSync();
