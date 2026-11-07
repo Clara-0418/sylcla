@@ -1,4 +1,4 @@
-﻿/* Cheun · static site + DeepSeek AI proxy (single public-ready server). */
+/* Cheun · static site + DeepSeek AI proxy (single public-ready server). */
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
@@ -31,6 +31,17 @@ function writeState(data) {
   const json = JSON.stringify(data);
   db.prepare('INSERT INTO site_state (id, json, updated_at) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET json = excluded.json, updated_at = excluded.updated_at').run(json, now);
   return now;
+}
+
+function publicData(data) {
+  if (!data || typeof data !== 'object') return data;
+  const copy = JSON.parse(JSON.stringify(data));
+  ['daily', 'mail', 'space', 'calls', 'lore'].forEach((key) => {
+    if (Array.isArray(copy[key])) {
+      copy[key] = copy[key].filter((rec) => !rec || rec.isPublic !== false);
+    }
+  });
+  return copy;
 }
 
 let apiKey = process.env.DEEPSEEK_API_KEY || '';
@@ -129,8 +140,12 @@ function dataApi(req, res) {
   }
   if (req.method === 'GET') {
     const state = readState();
+    const full = (req.headers['x-sylcla-password'] || '') === DB_PASSWORD;
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
-    res.end(JSON.stringify(state));
+    res.end(JSON.stringify({
+      updatedAt: state.updatedAt,
+      data: full ? state.data : publicData(state.data)
+    }));
     return;
   }
   if (req.method !== 'PUT') {
