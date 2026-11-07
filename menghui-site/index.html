@@ -6232,21 +6232,13 @@ window.SYLCLA = (function () {
     const box = $('#list-daily');
     if (!box) return;
     box.innerHTML = '';
-    const all = sortByDate(visibleList(state.data.daily));
-    if (!all.length) { box.appendChild(emptyNode('daily')); return; }
+    const list = sortByDate(visibleList(state.data.daily));
+    if (!list.length) { box.appendChild(emptyNode('daily')); return; }
 
-    [['him', '他的点滴', 'HIS'], ['me', '我的点滴', 'MINE']].forEach(([owner, title, en]) => {
-      const list = all.filter((rec) => (rec.owner === 'me' ? 'me' : 'him') === owner);
-      if (!list.length) return;
-      const head = el('div', 'daily-group');
-      head.appendChild(el('h3', '', title));
-      head.appendChild(el('span', '', en));
-      box.appendChild(head);
-      list.forEach((rec, i) => {
-        const row = buildMoment(rec, i);
-        box.appendChild(row);
-        watch(row);
-      });
+    list.forEach((rec, i) => {
+      const row = buildMoment(rec, i);
+      box.appendChild(row);
+      watch(row);
     });
   }
 
@@ -6523,7 +6515,7 @@ window.SYLCLA = (function () {
     const pub = $('#composerPublic');
     if (pub) pub.checked = !rec || rec.isPublic !== false;
     const ownerWrap = $('#composerOwnerWrap');
-    if (ownerWrap) ownerWrap.hidden = moduleId !== 'daily';
+    if (ownerWrap) ownerWrap.hidden = true;
     const owner = $('#composerOwner');
     if (owner) owner.value = rec && rec.owner === 'me' ? 'me' : 'him';
     const error = $('#composerError');
