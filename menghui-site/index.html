@@ -6129,7 +6129,15 @@ window.SYLCLA = (function () {
     const box = $('#list-lore');
     if (!box) return;
     box.innerHTML = '';
-    const list = visibleList(state.data.lore);
+    const list = visibleList(state.data.lore).slice().sort((a, b) => {
+      const oa = Number.isFinite(Number(a.order)) ? Number(a.order) : Number.MAX_SAFE_INTEGER;
+      const ob = Number.isFinite(Number(b.order)) ? Number(b.order) : Number.MAX_SAFE_INTEGER;
+      if (oa !== ob) return oa - ob;
+      const da = a.date ? parseDate(a.date).getTime() : 0;
+      const db = b.date ? parseDate(b.date).getTime() : 0;
+      if (da !== db) return db - da;
+      return String(a.name || a.id).localeCompare(String(b.name || b.id));
+    });
     if (!list.length) {
       box.appendChild(emptyNode('lore'));
       return;
@@ -6169,6 +6177,21 @@ window.SYLCLA = (function () {
       main.appendChild(el('p', 'record__excerpt', item.body || ''));
 
       const actions = el('div', 'record__actions');
+      if (state.admin) {
+        const up = el('button', 'card-act', '↑');
+        up.type = 'button';
+        up.dataset.spaceMove = 'up';
+        up.dataset.module = 'lore';
+        up.dataset.id = item.id;
+        up.title = '上移';
+        const down = el('button', 'card-act', '↓');
+        down.type = 'button';
+        down.dataset.spaceMove = 'down';
+        down.dataset.module = 'lore';
+        down.dataset.id = item.id;
+        down.title = '下移';
+        actions.prepend(up, down);
+      }
       const read = el('button', 'record__read', '阅读全文');
       read.type = 'button';
       read.dataset.view = item.id;
@@ -6275,13 +6298,16 @@ window.SYLCLA = (function () {
 
   /* ══════════════════ 渲染：空间 ══════════════════ */
 
-  function moveSpace(id, direction) {
+  function moveOrdered(moduleId, id, direction) {
     if (!state.admin) return;
-    const list = visibleList(state.data.space).slice().sort((a, b) => {
+    const list = visibleList(state.data[moduleId]).slice().sort((a, b) => {
       const oa = Number.isFinite(Number(a.order)) ? Number(a.order) : Number.MAX_SAFE_INTEGER;
       const ob = Number.isFinite(Number(b.order)) ? Number(b.order) : Number.MAX_SAFE_INTEGER;
       if (oa !== ob) return oa - ob;
-      return parseDate(b.date) - parseDate(a.date);
+      const da = a.date ? parseDate(a.date).getTime() : 0;
+      const db = b.date ? parseDate(b.date).getTime() : 0;
+      if (da !== db) return db - da;
+      return String(a.name || a.id).localeCompare(String(b.name || b.id));
     });
     list.forEach((rec, i) => { rec.order = i; });
     const index = list.findIndex((rec) => rec.id === id);
@@ -6291,8 +6317,13 @@ window.SYLCLA = (function () {
     list[index].order = list[target].order;
     list[target].order = tmp;
     persist();
-    renderSpace();
+    if (moduleId === 'lore') renderLore();
+    else renderSpace();
     toast(direction === 'up' ? '已上移' : '已下移');
+  }
+
+  function moveSpace(id, direction) {
+    moveOrdered('space', id, direction);
   }
 
   function renderSpace() {
@@ -8187,7 +8218,7 @@ window.SYLCLA = (function () {
       if (add) { e.preventDefault(); openComposer(add.dataset.add); return; }
 
       const move = e.target.closest('[data-space-move]');
-      if (move) { moveSpace(move.dataset.id, move.dataset.spaceMove); return; }
+      if (move) { moveOrdered(move.dataset.module || 'space', move.dataset.id, move.dataset.spaceMove); return; }
 
       const view = e.target.closest('[data-view]');
       if (view) { openViewer(view.dataset.module, view.dataset.view); return; }
