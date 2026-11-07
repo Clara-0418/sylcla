@@ -245,6 +245,11 @@ const server = http.createServer((req, res) => {
     return;
   }
   if (pathname === '/api/admin/db') {
+    if (process.env.ENABLE_DB_BACKUP !== '1') {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'not found' }));
+      return;
+    }
     if ((req.headers['x-sylcla-password'] || '') !== DB_PASSWORD) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'unauthorized' }));
@@ -267,6 +272,11 @@ const server = http.createServer((req, res) => {
     return;
   }
   if (pathname === '/api/admin/db-files') {
+    if (process.env.ENABLE_DB_BACKUP !== '1') {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'not found' }));
+      return;
+    }
     if ((req.headers['x-sylcla-password'] || '') !== DB_PASSWORD) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'unauthorized' }));
