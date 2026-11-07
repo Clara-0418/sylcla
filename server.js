@@ -244,6 +244,45 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ ok: true, database: 'sqlite', ai: !!apiKey }));
     return;
   }
+  if (pathname === '/api/admin/db') {
+    if ((req.headers['x-sylcla-password'] || '') !== DB_PASSWORD) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'unauthorized' }));
+      return;
+    }
+    fs.readFile(DB_FILE, (err, buf) => {
+      if (err) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'database not found' }));
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': 'application/octet-stream',
+        'Content-Disposition': 'attachment; filename="sylcla.db"',
+        'Content-Length': buf.length,
+        'Cache-Control': 'no-store'
+      });
+      res.end(buf);
+    });
+    return;
+  }
+  if (pathname === '/api/admin/db-files') {
+    if ((req.headers['x-sylcla-password'] || '') !== DB_PASSWORD) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'unauthorized' }));
+      return;
+    }
+    const names = ['sylcla.db', 'sylcla.db-wal', 'sylcla.db-shm', 'sylcla.db-journal'];
+    const files = names.map((name) => {
+      try {
+        const s = fs.statSync(path.join(DATA_DIR, name));
+        return { name, size: s.size, mtime: s.mtimeMs };
+      } catch (e) { return { name, size: null }; }
+    });
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify({ dataDir: DATA_DIR, files }));
+    return;
+  }
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.writeHead(405);
     res.end('Method not allowed');
