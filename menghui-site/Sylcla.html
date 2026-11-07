@@ -18,7 +18,8 @@
 </script>
 <title>Sylcla · 纯宝与秦彻的档案</title>
 <meta name="description" content="Sylcla，纯宝与秦彻的私人梦向档案。档案、设定集、点滴、邮箱、你我之间、通话，六个板块各自独立成页。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23050304'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%23e0162b' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='9' fill='%23e0162b'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon-chain.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+SC:wght@200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" media="print" onload="this.media='all'">
@@ -56,7 +57,7 @@
   inset: -10%;
   background:
     radial-gradient(46% 42% at 50% 46%, rgba(150, 12, 28, .30), transparent 70%),
-    radial-gradient(28% 30% at 78% 18%, rgba(96, 40, 130, .13), transparent 72%),
+    radial-gradient(28% 30% at 78% 18%, rgba(224, 22, 43, .10), transparent 72%),
     radial-gradient(30% 34% at 18% 82%, rgba(190, 20, 40, .10), transparent 72%);
   filter: blur(6px);
   animation: splashAura 12s ease-in-out infinite alternate;
@@ -164,10 +165,10 @@
 }
 
 .splash .xwsmx_particle_1 { top: 20%; left: 30%; box-shadow: 0 0 4px 2px rgba(180, 40, 60, .6); animation: xwsmx_drift 12s linear infinite; }
-.splash .xwsmx_particle_2 { top: 60%; left: 70%; box-shadow: 0 0 4px 2px rgba(80, 60, 120, .6); animation: xwsmx_drift 15s linear infinite 2s; }
+.splash .xwsmx_particle_2 { top: 60%; left: 70%; box-shadow: 0 0 4px 2px rgba(224, 22, 43, .45); animation: xwsmx_drift 15s linear infinite 2s; }
 .splash .xwsmx_particle_3 { top: 80%; left: 20%; box-shadow: 0 0 4px 1px rgba(255, 255, 255, .4); animation: xwsmx_drift 10s linear infinite 4s; }
 .splash .xwsmx_particle_4 { top: 30%; left: 80%; box-shadow: 0 0 6px 2px rgba(180, 40, 60, .8); animation: xwsmx_drift 18s linear infinite 1s; }
-.splash .xwsmx_particle_5 { top: 50%; left: 50%; box-shadow: 0 0 5px 2px rgba(80, 60, 120, .7); animation: xwsmx_drift 14s linear infinite 5s; }
+.splash .xwsmx_particle_5 { top: 50%; left: 50%; box-shadow: 0 0 5px 2px rgba(224, 22, 43, .5); animation: xwsmx_drift 14s linear infinite 5s; }
 
 @keyframes xwsmx_drift {
   0%   { transform: translate3d(0, 0, -50px) rotate(0deg); opacity: 0; }
@@ -190,8 +191,8 @@
 .splash .xwsmx_star_bottom { bottom: 15%; right: 10%; animation-delay: 2s; transform: scale(.7); }
 
 @keyframes xwsmx_star_pulse {
-  0%   { transform: scale(.8) rotate(0deg); opacity: .3; filter: drop-shadow(0 0 4px rgba(200, 50, 70, .3)); }
-  100% { transform: scale(1.1) rotate(45deg); opacity: .9; filter: drop-shadow(0 0 12px rgba(100, 80, 140, .8)); }
+  0%   { transform: scale(.8) rotate(0deg); opacity: .3; filter: drop-shadow(0 0 4px rgba(224, 22, 43, .3)); }
+  100% { transform: scale(1.1) rotate(45deg); opacity: .9; filter: drop-shadow(0 0 12px rgba(255, 60, 80, .55)); }
 }
 
 .splash .xwsmx_svg_wrapper {
@@ -4235,6 +4236,13 @@ body:not(.is-admin) #chatEditBtn { display: none; }
 .hero__timer-unit strong { font-family: var(--serif-en); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 400; line-height: 1; color: var(--bone); text-shadow: 0 0 24px rgba(224, 22, 43, .35); font-variant-numeric: tabular-nums; }
 .hero__timer-unit small { margin-top: .35rem; font-size: .55rem; letter-spacing: .18em; color: var(--faint); }
 @media (max-width: 460px) { .hero__timer-units { gap: 1.1rem; } .hero__timer-unit { min-width: 2.9rem; } .hero__timer-unit strong { font-size: 1.55rem; } }
+@media (max-width: 760px) {
+  .splash__aura { background: radial-gradient(46% 42% at 50% 46%, rgba(150, 12, 28, .32), transparent 70%), radial-gradient(28% 30% at 78% 18%, rgba(224, 22, 43, .10), transparent 72%), radial-gradient(30% 34% at 18% 82%, rgba(190, 20, 40, .10), transparent 72%); }
+  .splash .xwsmx_center_title { mix-blend-mode: normal; }
+  .splash .xwsmx_text_path_hate { fill: #0a0204; filter: none; }
+  .splash .xwsmx_text_path_shadow { stroke: rgba(242, 236, 232, .07); }
+  .splash .xwsmx_svg_wrapper { filter: drop-shadow(0 12px 20px rgba(0, 0, 0, .45)); }
+}
 </style>
 </head>
 <body class="is-locked">
@@ -4424,7 +4432,7 @@ body:not(.is-admin) #chatEditBtn { display: none; }
     <button id="bgmNext" type="button" aria-label="下一首">›</button>
   </div>
   <div id="bgmList" class="bgm-list"></div>
-  <p class="bgm-panel__note">六首 · 自动循环</p>
+  <p class="bgm-panel__note">七首 · 自动循环</p>
 </div>
 
 <main>
@@ -5550,11 +5558,16 @@ window.SYLCLA = (function () {
       const btn = $('#enterSplash');
       if (btn && !reduceMotion) btn.focus({ preventScroll: true });
     }, readyAt));
+
+    setTimeout(() => {
+      if (!state.bgm || !state.bgm.on) startBgm();
+    }, 650);
   }
 
   /* ══════════════════ 背景音乐 ══════════════════ */
 
   const BGM_TRACKS = [
+    { title: 'Valse Sentimentale No. 2', artist: 'Eric Christian', src: 'assets/audio/valse-sentimentale-no-2.mp3' },
     { title: '不设防禁区', artist: '恋与深空', src: 'assets/audio/budang-fang-jinqu.mp3' },
     { title: 'French Movie Waltz', artist: 'Relivka', src: 'assets/audio/french-movie-waltz.mp3' },
     { title: '灰绣球', artist: 'M3mo / Zy', src: 'assets/audio/hui-xiu-qiu.mp3' },
@@ -5562,16 +5575,21 @@ window.SYLCLA = (function () {
     { title: 'Forever', artist: 'The Little Dippers', src: 'assets/audio/forever.mp3' },
     { title: "Trees don't speak", artist: 'Luis Berra', src: 'assets/audio/trees-dont-speak.mp3' }
   ];
+  const BGM_VERSION = '20261107-valse';
 
   function readBgmIndex() {
     try {
+      if (localStorage.getItem('sylcla.bgm.version') !== BGM_VERSION) return 0;
       const n = Number(localStorage.getItem('sylcla.bgm.track'));
       return Number.isInteger(n) && n >= 0 && n < BGM_TRACKS.length ? n : 0;
     } catch (e) { return 0; }
   }
 
   function saveBgmIndex(index) {
-    try { localStorage.setItem('sylcla.bgm.track', String(index)); } catch (e) { /* ignore */ }
+    try {
+      localStorage.setItem('sylcla.bgm.track', String(index));
+      localStorage.setItem('sylcla.bgm.version', BGM_VERSION);
+    } catch (e) { /* ignore */ }
   }
 
   function setupBgm() {
@@ -6214,21 +6232,13 @@ window.SYLCLA = (function () {
     const box = $('#list-daily');
     if (!box) return;
     box.innerHTML = '';
-    const all = sortByDate(visibleList(state.data.daily));
-    if (!all.length) { box.appendChild(emptyNode('daily')); return; }
+    const list = sortByDate(visibleList(state.data.daily));
+    if (!list.length) { box.appendChild(emptyNode('daily')); return; }
 
-    [['him', '他的点滴', 'HIS'], ['me', '我的点滴', 'MINE']].forEach(([owner, title, en]) => {
-      const list = all.filter((rec) => (rec.owner === 'me' ? 'me' : 'him') === owner);
-      if (!list.length) return;
-      const head = el('div', 'daily-group');
-      head.appendChild(el('h3', '', title));
-      head.appendChild(el('span', '', en));
-      box.appendChild(head);
-      list.forEach((rec, i) => {
-        const row = buildMoment(rec, i);
-        box.appendChild(row);
-        watch(row);
-      });
+    list.forEach((rec, i) => {
+      const row = buildMoment(rec, i);
+      box.appendChild(row);
+      watch(row);
     });
   }
 
@@ -6505,7 +6515,7 @@ window.SYLCLA = (function () {
     const pub = $('#composerPublic');
     if (pub) pub.checked = !rec || rec.isPublic !== false;
     const ownerWrap = $('#composerOwnerWrap');
-    if (ownerWrap) ownerWrap.hidden = moduleId !== 'daily';
+    if (ownerWrap) ownerWrap.hidden = true;
     const owner = $('#composerOwner');
     if (owner) owner.value = rec && rec.owner === 'me' ? 'me' : 'him';
     const error = $('#composerError');
