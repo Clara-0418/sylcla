@@ -3,15 +3,18 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const PORT = Number(process.env.PORT || 4173);
 const SITE = path.join(__dirname, 'menghui-site');
 const KEY_FILE = path.join(__dirname, 'ai-key.txt');
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const DB_FILE = path.join(DATA_DIR, 'sylcla.db');
+const MEDIA_DIR = path.join(DATA_DIR, 'images');
 const DB_PASSWORD = process.env.SYLCLA_PASSWORD || '20240715';
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
+fs.mkdirSync(MEDIA_DIR, { recursive: true });
 const { DatabaseSync } = require('node:sqlite');
 const db = new DatabaseSync(DB_FILE);
 db.exec('CREATE TABLE IF NOT EXISTS site_state (id INTEGER PRIMARY KEY CHECK (id = 1), json TEXT NOT NULL, updated_at INTEGER NOT NULL)');
@@ -42,6 +45,55 @@ function publicData(data) {
     }
   });
   return copy;
+}
+
+const IMAGE_EXT = { jpeg: 'jpg', jpg: 'jpg', png: 'png', webp: 'webp', gif: 'gif' };
+
+function storeImage(value) {
+  if (typeof value !== 'string') return value;
+  const m = /^data:image\/([a-z0-9+.-]+);base64,([\s\S]+)$/i.exec(value);
+  if (!m) return value;
+  const ext = IMAGE_EXT[m[1].toLowerCase()];
+  if (!ext) return value;
+  try {
+    const buf = Buffer.from(m[2], 'base64');
+    if (!buf.length) return value;
+    const hash = crypto.createHash('sha1').update(buf).digest('hex');
+    const name = hash + '.' + ext;
+    const file = path.join(MEDIA_DIR, name);
+    if (!fs.existsSync(file)) fs.writeFileSync(file, buf);
+    return '/media/' + name;
+  } catch (e) {
+    return value;
+  }
+}
+
+function compactData(data) {
+  if (!data || typeof data !== 'object') return data;
+  const copy = JSON.parse(JSON.stringify(data));
+  (copy.dossiers || []).forEach((rec) => {
+    if (rec && rec.photo) rec.photo = storeImage(rec.photo);
+  });
+  ['daily', 'space'].forEach((key) => {
+    (copy[key] || []).forEach((rec) => {
+      if (rec && rec.image) rec.image = storeImage(rec.image);
+    });
+  });
+  return copy;
+}
+
+function migrateImages() {
+  const state = readState();
+  if (!state.data) return;
+  const before = Buffer.byteLength(JSON.stringify(state.data));
+  if (before < 2 * 1024 * 1024) return;
+  fs.writeFileSync(path.join(DATA_DIR, 'backup-before-images-' + Date.now() + '.json'), JSON.stringify(state));
+  const compact = compactData(state.data);
+  const after = Buffer.byteLength(JSON.stringify(compact));
+  if (after < before) {
+    writeState(compact);
+    console.log('Compacted images: ' + before + ' -> ' + after + ' bytes');
+  }
 }
 
 let apiKey = process.env.DEEPSEEK_API_KEY || '';
@@ -161,7 +213,7 @@ function dataApi(req, res) {
   let body = '';
   req.on('data', (chunk) => {
     body += chunk;
-    if (body.length > 10 * 1024 * 1024) req.destroy();
+    if (body.length > 50 * 1024 * 1024) req.destroy();
   });
   req.on('end', () => {
     try {
@@ -170,13 +222,39 @@ function dataApi(req, res) {
       if (!data || typeof data !== 'object' || !Array.isArray(data.dossiers)) {
         throw new Error('invalid data');
       }
-      const updatedAt = writeState(data);
+      const updatedAt = writeState(compactData(data));
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ updatedAt }));
     } catch (e) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'invalid data' }));
     }
+  });
+}
+
+function serveMedia(req, res, pathname) {
+  const name = path.basename(decodeURIComponent(pathname));
+  if (!/^[a-f0-9]{40}\.(jpg|jpeg|png|webp|gif)$/i.test(name)) {
+    res.writeHead(404);
+    res.end('Not found');
+    return;
+  }
+  const file = path.join(MEDIA_DIR, name);
+  fs.stat(file, (err, stat) => {
+    if (err || !stat.isFile()) {
+      res.writeHead(404);
+      res.end('Not found');
+      return;
+    }
+    const ext = path.extname(name).toLowerCase();
+    const type = MIME[ext] || 'application/octet-stream';
+    res.writeHead(200, {
+      'Content-Type': type,
+      'Content-Length': stat.size,
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      'Accept-Ranges': 'bytes'
+    });
+    fs.createReadStream(file).pipe(res);
   });
 }
 
@@ -298,8 +376,14 @@ const server = http.createServer((req, res) => {
     res.end('Method not allowed');
     return;
   }
+  if (pathname.startsWith('/media/')) {
+    serveMedia(req, res, pathname);
+    return;
+  }
   serveStatic(req, res, pathname);
 });
+
+migrateImages();
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Sylcla listening on http://127.0.0.1:${PORT}/`);
