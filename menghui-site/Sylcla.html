@@ -4237,12 +4237,15 @@ body:not(.is-admin) #chatEditBtn { display: none; }
 .hero__timer-unit small { margin-top: .35rem; font-size: .55rem; letter-spacing: .18em; color: var(--faint); }
 @media (max-width: 460px) { .hero__timer-units { gap: 1.1rem; } .hero__timer-unit { min-width: 2.9rem; } .hero__timer-unit strong { font-size: 1.55rem; } }
 @media (max-width: 760px) {
+  .moment__image { max-width: 100%; max-height: 300px; margin-left: auto; margin-right: auto; object-fit: contain; }
   .splash__aura { background: radial-gradient(46% 42% at 50% 46%, rgba(150, 12, 28, .32), transparent 70%), radial-gradient(28% 30% at 78% 18%, rgba(224, 22, 43, .10), transparent 72%), radial-gradient(30% 34% at 18% 82%, rgba(190, 20, 40, .10), transparent 72%); }
   .splash .xwsmx_center_title { mix-blend-mode: normal; }
   .splash .xwsmx_text_path_hate { fill: #0a0204; filter: none; }
   .splash .xwsmx_text_path_shadow { stroke: rgba(242, 236, 232, .07); }
   .splash .xwsmx_svg_wrapper { filter: drop-shadow(0 12px 20px rgba(0, 0, 0, .45)); }
 }
+.moment__image { width: auto; max-width: min(100%, 460px); max-height: 420px; margin-left: auto; margin-right: auto; object-fit: contain; }
+@media (max-width: 760px) { .moment__image { max-width: 100%; max-height: 300px; } }
 </style>
 </head>
 <body class="is-locked">
@@ -4294,7 +4297,7 @@ body:not(.is-admin) #chatEditBtn { display: none; }
               </div>
               <div class="copy2__by">
                 <span class="copy2__rule"></span>
-                灵魂相契，生死与共
+                灵魂相契，永不背叛
                 <span class="copy2__rule"></span>
               </div>
             </div>
