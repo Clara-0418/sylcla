@@ -39,7 +39,7 @@ function writeState(data) {
 function publicData(data) {
   if (!data || typeof data !== 'object') return data;
   const copy = JSON.parse(JSON.stringify(data));
-  ['daily', 'mail', 'space', 'calls', 'lore'].forEach((key) => {
+  ['daily', 'mail', 'space', 'calls', 'lore', 'whispers'].forEach((key) => {
     if (Array.isArray(copy[key])) {
       copy[key] = copy[key].filter((rec) => !rec || rec.isPublic !== false);
     }
@@ -76,7 +76,9 @@ function compactData(data) {
   });
   ['daily', 'space'].forEach((key) => {
     (copy[key] || []).forEach((rec) => {
-      if (rec && rec.image) rec.image = storeImage(rec.image);
+      if (!rec) return;
+      if (rec.image) rec.image = storeImage(rec.image);
+      if (Array.isArray(rec.images)) rec.images = rec.images.map(storeImage);
     });
   });
   return copy;
