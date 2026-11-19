@@ -4225,7 +4225,7 @@ body:not(.is-admin) .footer__data { display: none; }
 .daily-group:first-child { margin-top: 0; }
 .daily-group h3 { margin: 0; font-family: var(--serif-cn); font-size: 1.1rem; font-weight: 400; letter-spacing: .08em; color: var(--bone); }
 .daily-group span { font-family: var(--serif-en); font-size: .56rem; letter-spacing: .26em; color: var(--faint); }
-.chat-panel__head-actions { display: flex; align-items: center; gap: .7rem; }
+.chat-panel__head-actions { display: flex; align-items: center; gap: .7rem; padding-right: 3.6rem; }
 .chat-panel__edit { border: 1px solid var(--line-soft); background: transparent; color: var(--dim); padding: .4rem .7rem; font-size: .62rem; letter-spacing: .1em; cursor: pointer; }
 .chat-panel__edit:hover { color: var(--bone); border-color: var(--red); }
 body:not(.is-admin) #chatEditBtn { display: none; }
@@ -4246,6 +4246,35 @@ body:not(.is-admin) #chatEditBtn { display: none; }
 }
 .moment__image { width: auto; max-width: min(100%, 460px); max-height: 420px; margin-left: auto; margin-right: auto; object-fit: contain; }
 @media (max-width: 760px) { .moment__image { max-width: 100%; max-height: 300px; } }
+.moment__images { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: min(100%, 390px); margin: 0 0 .9rem; }
+.moment__thumb { display: block; width: 100%; aspect-ratio: 1; padding: 0; border: 1px solid var(--line-soft); background: #0a0607; overflow: hidden; cursor: zoom-in; }
+.moment__thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.moment__thumb:only-child { grid-column: 1 / -1; aspect-ratio: auto; height: 220px; }
+.moment__thumb:hover { border-color: rgba(224, 22, 43, .65); }
+@media (max-width: 760px) { .moment__images { width: 100%; } .moment__thumb:only-child { height: 220px; } }
+.image-lightbox { position: fixed; inset: 0; z-index: 1500; display: grid; place-items: center; padding: 4vh 4vw; background: rgba(0, 0, 0, .94); }
+.image-lightbox[hidden] { display: none; }
+.image-lightbox img { max-width: 94vw; max-height: 90vh; width: auto; height: auto; object-fit: contain; box-shadow: 0 0 60px rgba(224, 22, 43, .16); }
+.image-lightbox__close { position: absolute; top: 1.2rem; right: 1.2rem; width: 42px; height: 42px; border: 1px solid var(--line-soft); background: rgba(7, 4, 5, .8); color: var(--bone); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.image-lightbox__close:hover { border-color: var(--red); }
+.whisper-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: .6rem; }
+.whisper-card { position: relative; padding: 1.1rem 1.15rem; border: 1px solid var(--line-soft); background: linear-gradient(145deg, rgba(224, 22, 43, .04), transparent 55%); }
+.whisper-card::before { content: ''; position: absolute; top: 0; left: 0; width: 28px; height: 1px; background: var(--red); }
+.whisper-card__head { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-bottom: .7rem; }
+.whisper-card__date { font-family: var(--latin); font-size: .56rem; letter-spacing: .18em; color: var(--faint); }
+.whisper-card__private { font-size: .54rem; letter-spacing: .1em; color: var(--red-ash); border: 1px solid rgba(224, 22, 43, .35); padding: .1rem .35rem; }
+.whisper-card__text { margin: 0; font-size: .82rem; line-height: 1.9; color: var(--bone); white-space: pre-wrap; }
+.whisper-card__tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
+.whisper-card__tags span { font-size: .58rem; color: var(--red-ash); border: 1px solid var(--line-soft); padding: .12rem .4rem; }
+.whisper-card .card-actions { margin-top: .8rem; }
+@media (max-width: 760px) { .whisper-list { grid-template-columns: 1fr; } }
+.multi-photo-field { width: 100%; }
+.multi-photo-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+.multi-photo-item, .multi-photo-add { position: relative; width: 78px; height: 78px; border: 1px solid var(--line-soft); background: #0a0607; display: grid; place-items: center; overflow: hidden; }
+.multi-photo-item img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.multi-photo-del { position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; border: 1px solid rgba(224,22,43,.5); background: rgba(5,3,4,.85); color: #fff; cursor: pointer; line-height: 1; }
+.multi-photo-add { cursor: pointer; color: var(--red-ash); font-size: 1.4rem; }
+.multi-photo-add:hover { border-color: var(--red); color: var(--bone); }
 </style>
 </head>
 <body class="is-locked">
@@ -4388,6 +4417,7 @@ body:not(.is-admin) #chatEditBtn { display: none; }
     <a href="#/mail" data-route="mail">邮箱</a>
     <a href="#/space" data-route="space">你我之间</a>
     <a href="#/calls" data-route="calls">通话</a>
+    <a href="#/whispers" data-route="whispers">碎碎念</a>
   </nav>
   <div class="nav__actions">
     <button id="bgmBtn" class="nav__ghost" type="button" title="背景音乐">BGM</button>
@@ -4405,6 +4435,7 @@ body:not(.is-admin) #chatEditBtn { display: none; }
     <a href="#/mail" data-route="mail">邮箱 <em>MAIL</em></a>
     <a href="#/space" data-route="space">你我之间 <em>BETWEEN US</em></a>
     <a href="#/calls" data-route="calls">通话 <em>CALLS</em></a>
+    <a href="#/whispers" data-route="whispers">碎碎念 <em>WHISPERS</em></a>
   </div>
   <div class="nav__progress" aria-hidden="true"><i id="scrollProgress"></i></div>
 </header>
@@ -4621,7 +4652,31 @@ body:not(.is-admin) #chatEditBtn { display: none; }
       <div id="list-calls" class="call-list"></div>
     </div>
   </section>
+
+  <!-- ══════════════════ 07 碎碎念 ══════════════════ -->
+  <section id="view-whispers" class="view" hidden>
+    <div class="page">
+      <header class="page__head reveal">
+        <div class="page__intro">
+          <p class="page__eyebrow">SYLCLA · 07</p>
+          <h1 class="page__title">碎碎念</h1>
+          <p class="page__desc">灵感、碎片、没说完的话，都放在这里。</p>
+        </div>
+        <div class="page__side">
+          <span class="page__count" data-count="whispers">0 条</span>
+          <button type="button" class="btn btn--fill btn--sm" data-add="whispers">＋ 写一条</button>
+        </div>
+      </header>
+      <div id="list-whispers" class="whisper-list"></div>
+    </div>
+  </section>
 </main>
+
+<!-- ══════════════════ 图片大图 ══════════════════ -->
+<div id="imageLightbox" class="image-lightbox" hidden>
+  <button class="image-lightbox__close" type="button" aria-label="关闭大图" data-close-lightbox>×</button>
+  <img id="imageLightboxImg" alt="查看大图">
+</div>
 
 <!-- ══════════════════ 页脚 ══════════════════ -->
 <footer class="footer">
@@ -4636,6 +4691,7 @@ body:not(.is-admin) #chatEditBtn { display: none; }
       <a href="#/lore" data-route="lore">设定集</a>
       <a href="#/daily" data-route="daily">点滴</a>
       <a href="#/space" data-route="space">你我之间</a>
+      <a href="#/whispers" data-route="whispers">碎碎念</a>
       <a href="#/" data-route="home">回到顶部</a>
       <button id="replaySplash2" type="button">重看开屏</button>
       <div class="footer__data">
@@ -4996,7 +5052,7 @@ window.SYLCLA = (function () {
       fields: [
         { key: 'date', label: '日期', en: 'DATE', type: 'date', required: true },
         { key: 'mood', label: '情绪', en: 'MOOD', type: 'mood', wide: true },
-        { key: 'image', label: '图片', en: 'IMAGE', type: 'image', wide: true },
+        { key: 'images', label: '图片（可多选）', en: 'IMAGES', type: 'multiimage', wide: true },
         { key: 'text', label: '内容', en: 'TEXT', type: 'textarea', wide: true, required: true, max: 400, rows: 5, placeholder: '今天他说的那句话，或者什么都没说。' }
       ]
     },
@@ -5065,6 +5121,22 @@ window.SYLCLA = (function () {
         { key: 'minutes', label: '通话时长（分钟）', en: 'MINUTES', type: 'number', required: true, min: 0, max: 9999, value: 1 },
         { key: 'note', label: '备注', en: 'NOTE', type: 'textarea', wide: true, max: 300, rows: 4, placeholder: '他说了什么，或者只是呼吸声。' }
       ]
+    },
+    {
+      id: 'whispers',
+      name: '碎碎念',
+      en: 'WHISPERS',
+      title: '碎碎念',
+      desc: '灵感、碎片、没说完的话，都放在这里。',
+      addLabel: '写一条碎碎念',
+      emptyTitle: '还没有碎碎念',
+      emptyDesc: '一个念头、一句没头没尾的话，也值得留下。',
+      emptyEn: 'NOTHING WHISPERED',
+      fields: [
+        { key: 'date', label: '日期', en: 'DATE', type: 'date', required: true },
+        { key: 'text', label: '碎碎念', en: 'WHISPER', type: 'textarea', wide: true, required: true, max: 800, rows: 5, placeholder: '今天突然想到……' },
+        { key: 'tags', label: '标签', en: 'TAGS', type: 'tags', wide: true, placeholder: '灵感 / 片段 / 待写' }
+      ]
     }
   ];
 
@@ -5100,7 +5172,7 @@ window.SYLCLA = (function () {
   const MOD_IDS = MODULES.filter((m) => m.id !== 'anniversary').map((m) => m.id);
   const MOD_BY_ID = {};
   MODULES.forEach((m) => { MOD_BY_ID[m.id] = m; });
-  const ENTRY_KEYS = ['daily', 'mail', 'space', 'calls'];
+  const ENTRY_KEYS = ['daily', 'mail', 'space', 'calls', 'whispers'];
 
   const MONTH_EN = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
   const WEEKDAY_CN = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
@@ -5253,7 +5325,7 @@ window.SYLCLA = (function () {
   /* ══════════════════ 存储 ══════════════════ */
 
   function blankData() {
-    return { dossiers: [], lore: [], daily: [], mail: [], space: [], calls: [], anniversary: [] };
+    return { dossiers: [], lore: [], daily: [], mail: [], space: [], calls: [], whispers: [], anniversary: [] };
   }
 
   function defaultDossiers() {
@@ -5934,6 +6006,7 @@ window.SYLCLA = (function () {
       mail: ['封', '封'],
       space: ['条', '条'],
       calls: ['通', '通'],
+      whispers: ['条', '条'],
       anniversary: ['个', '个']
     };
     MODULES.forEach((m) => {
@@ -6240,12 +6313,23 @@ window.SYLCLA = (function () {
     if (mood) meta.appendChild(mood);
     if (rec.isPublic === false) meta.appendChild(el('span', 'chip-mood', '未公开'));
     if (meta.children.length) body.appendChild(meta);
-    if (rec.image) {
-      const img = document.createElement('img');
-      img.className = 'moment__image';
-      img.src = rec.image;
-      img.alt = '点滴图片';
-      body.appendChild(img);
+    const images = Array.isArray(rec.images) && rec.images.length
+      ? rec.images
+      : (rec.image ? [rec.image] : []);
+    if (images.length) {
+      const gallery = el('div', 'moment__images');
+      images.forEach((src) => {
+        const thumb = document.createElement('button');
+        thumb.type = 'button';
+        thumb.className = 'moment__thumb';
+        thumb.dataset.lightbox = src;
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '点滴图片';
+        thumb.appendChild(img);
+        gallery.appendChild(thumb);
+      });
+      body.appendChild(gallery);
     }
     body.appendChild(el('p', 'moment__text', rec.text));
     body.appendChild(cardActions('daily', rec.id));
@@ -6477,6 +6561,34 @@ window.SYLCLA = (function () {
     });
   }
 
+  function renderWhispers() {
+    const box = $('#list-whispers');
+    if (!box) return;
+    box.innerHTML = '';
+    const list = sortByDate(visibleList(state.data.whispers));
+    if (!list.length) {
+      box.appendChild(emptyNode('whispers'));
+      return;
+    }
+    list.forEach((rec, i) => {
+      const card = el('article', 'whisper-card');
+      card.style.transitionDelay = `${Math.min(i, 8) * 45}ms`;
+      const head = el('div', 'whisper-card__head');
+      head.appendChild(el('span', 'whisper-card__date', fmtDot(rec.date)));
+      if (rec.isPublic === false) head.appendChild(el('span', 'whisper-card__private', '未公开'));
+      card.appendChild(head);
+      card.appendChild(el('p', 'whisper-card__text', rec.text || ''));
+      if (Array.isArray(rec.tags) && rec.tags.length) {
+        const tags = el('div', 'whisper-card__tags');
+        rec.tags.forEach((tag) => tags.appendChild(el('span', '', tag)));
+        card.appendChild(tags);
+      }
+      card.appendChild(cardActions('whispers', rec.id, { view: false }));
+      box.appendChild(card);
+      watch(card);
+    });
+  }
+
   function renderAll() {
     renderStats();
     renderCounts();
@@ -6486,6 +6598,7 @@ window.SYLCLA = (function () {
     renderMail();
     renderSpace();
     renderCalls();
+    renderWhispers();
     renderAnniversary();
   }
 
@@ -6544,7 +6657,11 @@ window.SYLCLA = (function () {
     const fields = $('#composerFields');
     fields.innerHTML = '';
     module.fields.forEach((f) => {
-      fields.appendChild(buildField(f, rec ? rec[f.key] : undefined));
+      let value = rec ? rec[f.key] : undefined;
+      if (f.type === 'multiimage' && rec) {
+        value = Array.isArray(rec.images) && rec.images.length ? rec.images : (rec.image ? [rec.image] : []);
+      }
+      fields.appendChild(buildField(f, value));
     });
     const pub = $('#composerPublic');
     if (pub) pub.checked = !rec || rec.isPublic !== false;
@@ -6684,6 +6801,60 @@ window.SYLCLA = (function () {
       return wrap;
     }
 
+    if (f.type === 'multiimage') {
+      let images = Array.isArray(value) ? value.slice() : [];
+      const holder = el('div', 'multi-photo-field');
+      const grid = el('div', 'multi-photo-grid');
+      const hidden = document.createElement('input');
+      hidden.type = 'hidden';
+      hidden.dataset.field = f.key;
+
+      const sync = () => {
+        hidden.value = JSON.stringify(images);
+        grid.innerHTML = '';
+        images.forEach((src, index) => {
+          const item = el('div', 'multi-photo-item');
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = '点滴图片';
+          const del = el('button', 'multi-photo-del', '×');
+          del.type = 'button';
+          del.setAttribute('aria-label', '移除这张图片');
+          del.addEventListener('click', () => {
+            images.splice(index, 1);
+            sync();
+          });
+          item.append(img, del);
+          grid.appendChild(item);
+        });
+        if (images.length < 9) {
+          const add = el('label', 'multi-photo-add', '＋');
+          add.title = '添加图片';
+          const picker = document.createElement('input');
+          picker.type = 'file';
+          picker.accept = 'image/*';
+          picker.multiple = true;
+          picker.hidden = true;
+          add.appendChild(picker);
+          picker.addEventListener('change', async () => {
+            const files = Array.from(picker.files || []).slice(0, 9 - images.length);
+            for (const file of files) {
+              try {
+                images.push(await compressImage(file, 1000));
+              } catch (e) { toast('图片读取失败，换一张试试'); }
+            }
+            sync();
+            picker.value = '';
+          });
+          grid.appendChild(add);
+        }
+      };
+      sync();
+      holder.append(grid, hidden);
+      wrap.appendChild(holder);
+      return wrap;
+    }
+
     if (f.type === 'nodes') {
       const holder = el('div', 'nodes-field');
       const hidden = document.createElement('input');
@@ -6793,6 +6964,9 @@ window.SYLCLA = (function () {
       const node = $(`#composerFields [data-field="${f.key}"]`);
       if (!node) return;
       if (f.type === 'mood' || f.type === 'segmented') out[f.key] = node.dataset.value || '';
+      else if (f.type === 'multiimage') {
+        try { out[f.key] = JSON.parse(node.value || '[]'); } catch (e) { out[f.key] = []; }
+      }
       else if (f.type === 'range' || f.type === 'number') out[f.key] = Math.max(0, Number(node.value) || 0);
       else if (f.type === 'tags') out[f.key] = parseTags(node.value);
       else if (f.type === 'nodes') {
@@ -8118,6 +8292,24 @@ window.SYLCLA = (function () {
     unlockScroll();
   }
 
+  function openImageLightbox(src) {
+    const box = $('#imageLightbox');
+    const img = $('#imageLightboxImg');
+    if (!box || !img) return;
+    img.src = src;
+    box.hidden = false;
+    lockScroll();
+  }
+
+  function closeImageLightbox() {
+    const box = $('#imageLightbox');
+    const img = $('#imageLightboxImg');
+    if (!box || box.hidden) return;
+    box.hidden = true;
+    if (img) img.src = '';
+    unlockScroll();
+  }
+
   function deleteEntry(moduleId, id) {
     if (!state.admin) {
       requireAdmin(() => deleteEntry(moduleId, id));
@@ -8211,6 +8403,12 @@ window.SYLCLA = (function () {
       const closeAiBtn = e.target.closest('[data-close-ai]');
       if (closeAiBtn) { closeAiConfig(); return; }
 
+      const closeLight = e.target.closest('[data-close-lightbox]');
+      if (closeLight || e.target.id === 'imageLightbox') { closeImageLightbox(); return; }
+
+      const light = e.target.closest('[data-lightbox]');
+      if (light) { openImageLightbox(light.dataset.lightbox); return; }
+
       const closeImport = e.target.closest('[data-close-chat-import]');
       if (closeImport) { closeChatImport(); return; }
 
@@ -8261,6 +8459,8 @@ window.SYLCLA = (function () {
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        const lightbox = $('#imageLightbox');
+        if (lightbox && !lightbox.hidden) { closeImageLightbox(); return; }
         const bgmPanel = $('#bgmPanel');
         if (bgmPanel && !bgmPanel.hidden) { closeBgmPanel(); return; }
         const aiModal = $('#aiConfig');
